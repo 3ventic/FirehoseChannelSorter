@@ -15,6 +15,7 @@ namespace FirehoseChannelSorter
         async static Task<int> Main(string[] args)
         {
             string url = Environment.GetEnvironmentVariable("URL");
+            string notty = Environment.GetEnvironmentVariable("NOTTY");
 
             if (string.IsNullOrWhiteSpace(url))
             {
@@ -34,7 +35,7 @@ namespace FirehoseChannelSorter
                 lines = l;
             }
 
-            bool repeat;
+            bool repeat = false;
             do
             {
                 channelCounts.Clear();
@@ -55,19 +56,22 @@ namespace FirehoseChannelSorter
                 await Task.Delay(500);
                 PrintTop(channelCounts, lines);
                 PrintTop(userCounts, lines);
-                Console.Write("Repeat? [y/N] ");
-                char c = Console.ReadKey().KeyChar;
-                switch (c)
+                if (notty != "1")
                 {
-                    case 'y':
-                    case 'Y':
-                        repeat = true;
-                        break;
-                    default:
-                        repeat = false;
-                        break;
+                    Console.Write("Repeat? [y/N] ");
+                    char c = Console.ReadKey().KeyChar;
+                    switch (c)
+                    {
+                        case 'y':
+                        case 'Y':
+                            repeat = true;
+                            break;
+                        default:
+                            repeat = false;
+                            break;
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
             }
             while (repeat);
 

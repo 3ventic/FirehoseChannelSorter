@@ -19,6 +19,7 @@ jobs:
     - name: Build & Run
       env:
         URL: ${{ secrets.FirehoseUrl }}
+        NOTTY: "1"
       run: |
         cd FirehoseChannelSorter
         dotnet restore
