@@ -23,4 +23,4 @@ jobs:
         cd FirehoseChannelSorter
         dotnet restore
         dotnet build -c Release
-        dotnet run 5 1
+        dotnet run 1 1
