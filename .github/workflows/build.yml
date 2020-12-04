@@ -1,0 +1,27 @@
+name: Build
+on:
+  push:
+    tags:
+    - *
+    branches:
+    - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet: [ '5.0.100' ]
+    name: Dotnet ${{ matrix.dotnet }} build
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet }}
+    - name: Build & Run
+      env:
+        URL: ${{ secrets.FirehoseUrl }}
+      run: |
+        cd FirehoseChannelSorter
+        dotnet restore
+        dotnet build -c Release
+        dotnet run 5 1
