@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using EvtSource;
 using Newtonsoft.Json;
@@ -54,8 +55,9 @@ namespace FirehoseChannelSorter
                 }
 
                 await Task.Delay(500);
-                PrintTop(channelCounts, lines);
-                PrintTop(userCounts, lines);
+                var total = channelCounts.Values.Sum();
+                PrintTop(channelCounts, lines, total);
+                PrintTop(userCounts, lines, total);
                 if (notty != "1")
                 {
                     Console.Write("Repeat? [y/N] ");
@@ -78,7 +80,7 @@ namespace FirehoseChannelSorter
             return 0;
         }
 
-        private static void PrintTop(Dictionary<string, int> counts, int limit)
+        private static void PrintTop(Dictionary<string, int> counts, int limit, int total)
         {
             Console.WriteLine("messages: name");
             var channels = new Dictionary<int, List<string>>();
@@ -101,7 +103,7 @@ namespace FirehoseChannelSorter
                 channels[index].Sort();
                 foreach (string channel in channels[index])
                 {
-                    Console.WriteLine($"{index,8}: {channel}");
+                    Console.WriteLine($"{index,8}: {channel,-30} ({100.0*index / total:F2}%)");
                     printed++;
                     if (printed == limit)
                     {
